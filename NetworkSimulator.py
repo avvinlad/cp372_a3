@@ -2,6 +2,7 @@
 import random 
 from common import *
 from Node import *
+import sys
 import copy
 
 class NetworkSimulator:
@@ -191,7 +192,7 @@ class NetworkSimulator:
         #self.eventList.print_evlist()
         while True: 
             # Get the next event in the list
-            next_event = self.eventList.removeNext();
+            next_event = self.eventList.removeNext()
 
             if next_event == None:
                 # we run out of events - exit - end of simulation
