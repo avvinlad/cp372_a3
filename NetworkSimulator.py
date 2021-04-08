@@ -13,7 +13,7 @@ class NetworkSimulator:
         trace = 2 #int(input("Enter TRACE: "))        
         self.TRACE = trace
         
-        num_nodes = 4 #int(input("Enter number of nodes:"))
+        num_nodes = 4 #int(input("Enter number of nodes:")) the possible numbers are 3, 4, and 9
         
         self.rand = random.seed(seed);        # instantiate Random number generator with provided seed
 
