@@ -16,23 +16,23 @@ class Node:
     def __init__(self, ID, networksimulator, costs):
         self.myID = ID
         self.ns = networksimulator
-        self.num = self.ns.NUM_NODES        
-        self.distanceTable = [[999 for i in range(self.num)] for j in range(self.num)]
-        self.routes = [0 for i in range(self.num)]
+        num = self.ns.NUM_NODES        
+        self.distanceTable = [[999 for i in range(num)] for j in range(num)]
+        self.routes = [0 for i in range(num)]
 
         # add id to route list for next hop
         self.routes[self.myID] = self.myID
 
         # sets values in distance table to their initial cost
-        for i in range(self.num):
+        for i in range(num):
             self.distanceTable[ID][i] = costs[i]
 
         # set the diagonal values of distance table to 0
-        for j in range(self.num):
+        for j in range(num):
            self.distanceTable[j][j] = 0
            
         # send a new packet with updated distance table
-        for k in range(self.num):
+        for k in range(num):
             if (self.routes[k] != 999) and (k != self.myID):
                 self.ns.tolayer2(RTPacket(self.myID, k, self.distanceTable[self.myID]))
 
@@ -42,7 +42,7 @@ class Node:
         # sets the mincosts to the distance table
         self.distanceTable[pkt.sourceid] = pkt.mincosts
 
-        for i in range(self.num):
+        for i in range(self.ns.NUM_NODES):
             if (pkt.mincosts[i] < self.distanceTable[pkt.sourceid][i]):
                 self.distanceTable[pkt.sourceid][i] = pkt.mincosts[i]
 
@@ -50,14 +50,14 @@ class Node:
         updated = False
 
         # bellman ford algorithm
-        for row in range(self.num):
-            for col in range(self.num):
+        for row in range(self.ns.NUM_NODES):
+            for col in range(self.ns.NUM_NODES):
                 if row != col:
                     if self.bellman_ford_algo(pkt, row, col):
                         updated = True
 
         # make sure the diagonal values remain 0 if not that means the values have updated
-        for diagonal in range(self.num):
+        for diagonal in range(self.ns.NUM_NODES):
             if self.distanceTable[diagonal][diagonal] != 0:
                 self.distanceTable[diagonal][diagonal] = 0
 
@@ -65,7 +65,7 @@ class Node:
         if updated:
             self.update_route()
             # sends the packet back to layer 2
-            for i in range(self.num):
+            for i in range(self.ns.NUM_NODES):
                 if self.routes[i] != 999 and i != self.myID:
                     self.ns.tolayer2(RTPacket(self.myID, i, self.distanceTable[self.myID]))
               
@@ -95,7 +95,7 @@ class Node:
         weight = []
 
         # loop through adding the weights of neighbours
-        for i in range(self.num):
+        for i in range(self.ns.NUM_NODES):
             weight.append(self.distanceTable[source][i] + self.distanceTable[i][destination])
 
         # check if minimum is less than what is in distance table and replace if true
